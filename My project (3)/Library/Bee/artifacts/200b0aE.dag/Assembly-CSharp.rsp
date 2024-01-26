@@ -352,6 +352,8 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/FollowPlayer.cs"
 "Assets/Scripts/PlayerMovement.cs"
+"Assets/ShootBow.cs"
+"Assets/Target.cs"
 -langversion:9.0
 
 /deterministic

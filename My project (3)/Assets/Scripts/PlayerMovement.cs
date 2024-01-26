@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private float originalHeight; // The original height of the controller
     public LayerMask ladderMask; // Layer to represent the ladder
     private bool isClimbing;
+    public LayerMask platformMask; // Add this line at the top of your script
 
     // Variables for mouse look
     public float mouseSensitivity = 100.0f;
@@ -101,10 +102,26 @@ public class PlayerMovement : MonoBehaviour
 
         if (isClimbing)
         {
-            moveVertical = Input.GetAxis("Vertical"); // Use the moveVertical variable that's already been declared
+            moveVertical = Input.GetAxis("Vertical");
             Vector3 mover = new Vector3(0, moveVertical, 0);
             controller.Move(mover * Time.deltaTime * speed);
-            playerVelocity.y = 0; // Prevent the player from falling due to gravity
+
+            // Check if the jump button is pressed
+            if (Input.GetButtonDown("Jump"))
+            {
+                playerVelocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            }
+            else
+            {
+                playerVelocity.y = 0; // Prevent the player from falling due to gravity
+            }
+
+            // Check if the player is at the top of the ladder
+            if (Physics.Raycast(transform.position, Vector3.up, out hit, 0.5f, platformMask))
+            {
+                // Add a small upward force to help the player climb off the ladder onto the platform
+                controller.Move(Vector3.up * Time.deltaTime * speed);
+            }
         }
     }
 
