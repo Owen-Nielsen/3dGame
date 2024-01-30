@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro; // Add this line
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -26,6 +28,11 @@ public class PlayerMovement : MonoBehaviour
     public float mouseSensitivity = 100.0f;
     public Transform playerBody;
     private float xRotation = 0.0f;
+    
+    public float health = 100f; // Player's health
+    public TextMeshProUGUI deathText; // Reference to the TextMeshProUGUI object
+    public Vector3 respawnPosition; // Position where the player will respawn
+    private bool isDead = false; // Whether the player is dead
 
     // Start is called before the first frame update
     void Start()
@@ -34,11 +41,15 @@ public class PlayerMovement : MonoBehaviour
         groundCheck = transform.GetChild(0); // Assuming the groundCheck transform is the first child of the player
         Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
         originalHeight = controller.height; // Save the original height of the controller
+        // Set the respawn position to the player's initial position
+        respawnPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+
         groundedPlayer = Physics.CheckSphere(groundCheck.position, groundDistance, groundLayer);
 
         if (groundedPlayer && playerVelocity.y < 0)
@@ -105,6 +116,14 @@ public class PlayerMovement : MonoBehaviour
             moveVertical = Input.GetAxis("Vertical");
             Vector3 mover = new Vector3(0, moveVertical, 0);
             controller.Move(mover * Time.deltaTime * speed);
+            playerVelocity.y = 0; // Prevent the player from falling due to gravity
+
+            // Check if the player is pressing the shift key
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                // Move the player down
+                controller.Move(-Vector3.up * Time.deltaTime * speed);
+            }
 
             // Check if the jump button is pressed
             if (Input.GetButtonDown("Jump"))
@@ -123,6 +142,57 @@ public class PlayerMovement : MonoBehaviour
                 controller.Move(Vector3.up * Time.deltaTime * speed);
             }
         }
+
+            if (health <= 0 && !isDead)
+            {
+                // Player is dead
+                Debug.Log("Player is dead");
+                deathText.text = "You have died. Press R to respawn."; // Display the death message
+                isDead = true;
+            }
+
+            // Check if the player is dead and the 'R' key is pressed
+            if (isDead && Input.GetKeyDown(KeyCode.R))
+            {
+                // Respawn the player
+                Respawn();
+            }
+        }
+
+            
+        
+
+    public void TakeDamage(float damage)
+    {
+        // Decrease the player's health by the damage amount
+        health -= damage;
+
+        // Check if the player's health is less than or equal to 0 and the player is not already dead
+        if (health <= 0 && !isDead)
+        {
+            // Player is dead
+            Debug.Log("Player is dead");
+            deathText.text = "You have died. Press R to respawn."; // Display the death message
+            isDead = true;
+        }
     }
 
+    
+    void Respawn()
+    {
+        // Reset the player's health
+        health = 100f;
+
+        // Teleport the player to the respawn position
+        Vector3 moveVector = respawnPosition - transform.position;
+        controller.Move(moveVector);
+
+        // Clear the death message
+        deathText.text = "";
+
+        // Set the player as not dead
+        isDead = false;
+    }
 }
+
+    
