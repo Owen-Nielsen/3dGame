@@ -350,6 +350,7 @@
 -r:"Library/Bee/artifacts/200b0aE.dag/Unity.VSCode.Editor.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/UnityEngine.UI.ref.dll"
+"Assets/Assets/FantasyIconsPackFree/Demo/IconViewer.cs"
 "Assets/Scripts/FollowPlayer.cs"
 "Assets/Scripts/Pathfind_to_Player.cs"
 "Assets/Scripts/PlayerMovement.cs"
