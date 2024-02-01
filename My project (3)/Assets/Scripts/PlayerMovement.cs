@@ -34,6 +34,19 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 respawnPosition; // Position where the player will respawn
     private bool isDead = false; // Whether the player is dead
 
+    public Item[] items; // The items the player can hold
+    public int currentItem = 0; // The index of the currently held item
+
+
+    [System.Serializable]
+    public class Item
+    {
+        public string name;
+        public int id;
+        public Sprite icon;
+        // Add other properties as needed...
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +56,15 @@ public class PlayerMovement : MonoBehaviour
         originalHeight = controller.height; // Save the original height of the controller
         // Set the respawn position to the player's initial position
         respawnPosition = transform.position;
+
+
+        Item newItem = new Item();
+        newItem.name = "New Item";
+        newItem.id = 1;
+
+        List<Item> itemList = new List<Item>(items);
+        itemList.Add(newItem);
+        items = itemList.ToArray();
     }
 
     // Update is called once per frame
@@ -157,6 +179,14 @@ public class PlayerMovement : MonoBehaviour
                 // Respawn the player
                 Respawn();
             }
+
+
+            // Check for the 'switch item' key (let's say it's 'Q')
+            if(Input.GetKeyDown(KeyCode.Q))
+            {
+                SwitchItem();
+            }
+
         }
 
             
@@ -193,6 +223,15 @@ public class PlayerMovement : MonoBehaviour
         // Set the player as not dead
         isDead = false;
     }
+
+    void SwitchItem()
+    {
+        currentItem = (currentItem + 1) % items.Length; // Move to the next item, loop back to the start if at the end
+        // Update the player's held item here...
+    }
+
+
+
 }
 
     
